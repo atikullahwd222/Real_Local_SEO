@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
 
-    <title>Account Settings - {{ config('app.name') }}</title>
+    <title>Settings - {{ config('app.name') }}</title>
 
     <meta name="description" content="" />
 
@@ -81,20 +81,20 @@
             <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto">
               <i class="bx bx-chevron-left d-block d-xl-none align-middle"></i>
             </a>
-                </div>
+          </div>
 
           <div class="menu-divider mt-0"></div>
 
           <div class="menu-inner-shadow"></div>
 
           <ul class="menu-inner py-1">
-            <li class="menu-item active">
+            <li class="menu-item">
               <a href="{{ route('profile.edit') }}" class="menu-link">
                 <i class="menu-icon tf-icons bx bx-user"></i>
                 <div data-i18n="Account">Account</div>
               </a>
             </li>
-            <li class="menu-item">
+            <li class="menu-item active">
               <a href="{{ route('settings') }}" class="menu-link">
                 <i class="menu-icon tf-icons bx bx-cog"></i>
                 <div data-i18n="Settings">Settings</div>
@@ -120,7 +120,7 @@
                 <li class="nav-item navbar-dropdown dropdown-user dropdown">
                   <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
                     <div class="avatar avatar-online">
-                      <img src="{{ auth()->user()->profile_picture ? asset('storage/' . auth()->user()->profile_picture) : asset('assets/img/avatars/default-avatar.png') }}" alt class="w-px-40 h-auto rounded-circle" />
+                      <img src="{{ auth()->user()->avatar ? asset('storage/' . auth()->user()->avatar) : asset('assets/img/avatars/default-avatar.png') }}" alt class="w-px-40 h-auto rounded-circle" />
                     </div>
                   </a>
                   <ul class="dropdown-menu dropdown-menu-end">
@@ -129,7 +129,7 @@
                         <div class="d-flex">
                           <div class="flex-shrink-0 me-3">
                             <div class="avatar avatar-online">
-                              <img src="{{ auth()->user()->profile_picture ? asset('storage/' . auth()->user()->profile_picture) : asset('assets/img/avatars/default-avatar.png') }}" alt class="w-px-40 h-auto rounded-circle" />
+                              <img src="{{ auth()->user()->avatar ? asset('storage/' . auth()->user()->avatar) : asset('assets/img/avatars/default-avatar.png') }}" alt class="w-px-40 h-auto rounded-circle" />
                             </div>
                           </div>
                           <div class="flex-grow-1">
@@ -181,114 +181,42 @@
               <div class="row">
                 <div class="col-md-12">
                   <div class="card mb-4">
-                    <h5 class="card-header">Profile Details</h5>
-                    <!-- Account -->
+                    <h5 class="card-header">Change Password</h5>
                     <div class="card-body">
-                      <div class="d-flex align-items-start align-items-sm-center gap-4">
-                        <img src="{{ auth()->user()->profile_picture ? asset('storage/' . auth()->user()->profile_picture) : asset('assets/img/avatars/default-avatar.png') }}" alt="user-avatar" class="d-block rounded" height="100" width="100" id="uploadedAvatar" />
-                        <div class="button-wrapper">
-                          <form id="formAccountSettings" method="POST" action="{{ route('profile.update') }}" enctype="multipart/form-data">
-                            @csrf
-                            @method('PUT')
-                            <label for="upload" class="btn btn-primary me-2 mb-4" tabindex="0">
-                              <span class="d-none d-sm-block">Upload new photo</span>
-                              <i class="bx bx-upload d-block d-sm-none"></i>
-                              <input type="file" id="upload" name="profile_picture" class="account-file-input" hidden accept="image/png, image/jpeg" />
-                            </label>
-                            <button type="button" class="btn btn-outline-secondary account-image-reset mb-4">
-                              <i class="bx bx-reset d-block d-sm-none"></i>
-                              <span class="d-none d-sm-block">Reset</span>
-                            </button>
-
-                            <p class="text-muted mb-0">Allowed JPG, GIF or PNG. Max size of 800K</p>
-                          </form>
-                        </div>
-                      </div>
-                    </div>
-                    <hr class="my-0" />
-                    <div class="card-body">
-                      <form id="formAccountSettings" method="POST" action="{{ route('profile.update') }}">
+                      <form id="formChangePassword" method="POST" action="{{ route('password.update') }}">
                         @csrf
-                        @method('patch')
+                        @method('PUT')
                         <div class="row">
                           <div class="mb-3 col-md-6">
-                            <label for="name" class="form-label">Full Name</label>
-                            <input class="form-control" type="text" id="name" name="name" value="{{ old('name', auth()->user()->name) }}" autofocus />
-                            @error('name')
+                            <label for="current_password" class="form-label">Current Password</label>
+                            <input class="form-control" type="password" id="current_password" name="current_password" autofocus />
+                            @error('current_password')
+                              <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="mb-3 col-md-6">
+                            <label for="new_password" class="form-label">New Password</label>
+                            <input class="form-control" type="password" id="new_password" name="new_password" />
+                            @error('new_password')
                               <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                           </div>
                           <div class="mb-3 col-md-6">
-                            <label for="email" class="form-label">E-mail</label>
-                            <input class="form-control" type="text" id="email" name="email" value="{{ old('email', auth()->user()->email) }}" placeholder="john.doe@example.com" />
-                            @error('email')
+                            <label for="new_password_confirmation" class="form-label">Confirm New Password</label>
+                            <input class="form-control" type="password" id="new_password_confirmation" name="new_password_confirmation" />
+                            @error('new_password_confirmation')
                               <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                           </div>
-                          <div class="mb-3 col-md-6">
-                            <label for="phone" class="form-label">Phone Number</label>
-                            <input class="form-control" type="text" id="phone" name="phone" value="{{ old('phone', auth()->user()->phone) }}" placeholder="+1 (123) 456-7890" />
-                            @error('phone')
-                              <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                          </div>
-                          <div class="mb-3 col-md-6">
-                            <label for="address" class="form-label">Address</label>
-                            <input class="form-control" type="text" id="address" name="address" value="{{ old('address', auth()->user()->address) }}" placeholder="Enter your address" />
-                            @error('address')
-                              <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                          </div>
-                          <div class="mb-3 col-md-6">
-                            <label for="city" class="form-label">City</label>
-                            <input class="form-control" type="text" id="city" name="city" value="{{ old('city', auth()->user()->city) }}" placeholder="Enter your city" />
-                            @error('city')
-                              <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                          </div>
-                          <div class="mb-3 col-md-6">
-                            <label for="state" class="form-label">State</label>
-                            <input class="form-control" type="text" id="state" name="state" value="{{ old('state', auth()->user()->state) }}" placeholder="Enter your state" />
-                            @error('state')
-                              <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                          </div>
-                          <div class="mb-3 col-md-6">
-                            <label for="postal_code" class="form-label">Postal Code</label>
-                            <input class="form-control" type="text" id="postal_code" name="postal_code" value="{{ old('postal_code', auth()->user()->postal_code) }}" placeholder="Enter your postal code" />
-                            @error('postal_code')
-                              <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                          </div>
-                          <div class="mb-3 col-md-6">
-                            <label for="country" class="form-label">Country</label>
-                            <select id="country" name="country" class="select2 form-select">
-                              <option value="">Select Country</option>
-                              <option value="US" {{ old('country', auth()->user()->country) == 'US' ? 'selected' : '' }}>United States</option>
-                              <option value="CA" {{ old('country', auth()->user()->country) == 'CA' ? 'selected' : '' }}>Canada</option>
-                              <option value="UK" {{ old('country', auth()->user()->country) == 'UK' ? 'selected' : '' }}>United Kingdom</option>
-                              <option value="AU" {{ old('country', auth()->user()->country) == 'AU' ? 'selected' : '' }}>Australia</option>
-                              <!-- Add more countries as needed -->
-                            </select>
-                            @error('country')
-                              <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                          </div>
-                          <div class="mb-3 col-md-12">
-                            <label for="bio" class="form-label">Bio</label>
-                            <textarea class="form-control" id="bio" name="bio" rows="3" placeholder="Enter your bio">{{ old('bio', auth()->user()->bio) }}</textarea>
-                            @error('bio')
-                              <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                          </div>
-                          <div class="mt-2">
-                            <button type="submit" class="btn btn-primary me-2">Save changes</button>
-                            <button type="reset" class="btn btn-outline-secondary">Cancel</button>
-                          </div>
+                        </div>
+                        <div class="mt-2">
+                          <button type="submit" class="btn btn-primary me-2">Change Password</button>
+                          <button type="reset" class="btn btn-outline-secondary">Cancel</button>
                         </div>
                       </form>
                     </div>
-                    <!-- /Account -->
                   </div>
                   <div class="card">
                     <h5 class="card-header">Delete Account</h5>
@@ -311,7 +239,7 @@
                     </div>
                   </div>
                 </div>
-                </div>
+              </div>
             </div>
             <!-- / Content -->
 
@@ -326,7 +254,7 @@
                   , made with ❤️ by
                   <a href="https://themeselection.com" target="_blank" class="footer-link fw-bolder">ThemeSelection</a>
                 </div>
-            </div>
+              </div>
             </footer>
             <!-- / Footer -->
 
