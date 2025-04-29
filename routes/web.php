@@ -1,11 +1,12 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\GuestController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('home');
-});
+Route::get('/', [GuestController::class, 'home'])->name('home');
+Route::get('/badsite-checker', [GuestController::class, 'bad_site_checker'])->name('badsite-checker');
+Route::get('/url-protocol', [GuestController::class, 'url_protocol'])->name('url-protocol');
 
 Route::get('/dashboard', function () {
     return view('dashboard');

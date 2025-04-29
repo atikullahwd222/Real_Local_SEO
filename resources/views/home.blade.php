@@ -272,18 +272,23 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link active" href="./index.html">
+                        <a class="nav-link active" href="{{ route('home') }}">
                             <i class="bi bi-intersect me-1"></i>Duplicate URL Checker
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="./bad-side-checker/index.html">
+                        <a class="nav-link" href="{{ route('badsite-checker') }}">
                             <i class="bi bi-shield-check me-1"></i>Bad Site Checker
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="./url-protocol/index.html">
+                        <a class="nav-link" href="{{ route('url-protocol') }}">
                             <i class="bi bi-shield-check me-1"></i>URL Protocol (http/https)
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{{ route('login') }}">
+                            <i class="bi bi-box-arrow-in-right me-1"></i>Login
                         </a>
                     </li>
                 </ul>
