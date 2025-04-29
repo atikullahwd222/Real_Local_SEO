@@ -9,7 +9,7 @@ Route::get('/badsite-checker', [GuestController::class, 'bad_site_checker'])->na
 Route::get('/url-protocol', [GuestController::class, 'url_protocol'])->name('url-protocol');
 
 Route::get('/dashboard', function () {
-    return view('dashboard');
+    return view('dashboard.index');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
