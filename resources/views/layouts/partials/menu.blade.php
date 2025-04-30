@@ -82,5 +82,18 @@
                 <div class="text-truncate">Settings</div>
             </a>
         </li>
+
+        <!-- Admin Area -->
+        @if ($user->role == 'admin')
+            <li class="menu-header small text-uppercase">
+                <span class="menu-header-text">Admin Area</span>
+            </li>
+            <li class="menu-item {{ request()->routeIs('users.*') ? 'active' : '' }}">
+                <a href="" class="menu-link">
+                    <i class="menu-icon tf-icons bx bx-shield-quarter"></i>
+                    <div class="text-truncate">Permission Manager</div>
+                </a>
+            </li>
+        @endif
     </ul>
 </aside>
