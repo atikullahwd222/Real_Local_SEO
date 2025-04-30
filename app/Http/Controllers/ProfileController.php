@@ -9,6 +9,9 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Storage;
+use App\Models\User;
 
 class ProfileController extends Controller
 {
@@ -25,17 +28,61 @@ class ProfileController extends Controller
     /**
      * Update the user's profile information.
      */
-    public function update(ProfileUpdateRequest $request): RedirectResponse
+    public function update(ProfileUpdateRequest $request): JsonResponse
     {
-        $request->user()->fill($request->validated());
+        $user = $request->user();
 
-        if ($request->user()->isDirty('email')) {
-            $request->user()->email_verified_at = null;
+        if ($user->isDirty('email')) {
+            $user->email_verified_at = null;
         }
 
-        $request->user()->save();
+        if ($request->hasFile('profile_picture')) {
+            // Delete old profile picture if it exists
+            if ($user->profile_picture && Storage::exists('public/' . $user->profile_picture)) {
+                Storage::delete('public/' . $user->profile_picture);
+            }
 
-        return Redirect::route('profile.edit')->with('status', 'profile-updated');
+            $file = $request->file('profile_picture');
+            $filename = time() . '.' . $file->getClientOriginalExtension();
+            $path = $file->storeAs('assets/img/avatar', $filename, 'public');
+            $user->profile_picture = $path;
+        }
+
+        $user->fill($request->validated())->save();
+
+        return response()->json([
+            'message' => 'Profile updated successfully.',
+            'profile_picture' => $user->profile_picture ? Storage::url($user->profile_picture) : null,
+        ]);
+    }
+
+    /**
+     * Update the user's profile picture.
+     */
+    public function updateProfilePicture(Request $request, $id)
+    {
+        $user = User::findOrFail($id);
+
+
+        if ($request->profile_picture) {
+            if ($request->hasFile('profile_picture')) {
+
+                if ($user->profile_picture !== 'assets/img/avatar/default.png' && file_exists(public_path($user->profile_picture))) {
+                    unlink(public_path($user->profile_picture));
+                }
+
+                $fileName = time() . '_' . $request->file('profile_picture')->getClientOriginalName();
+                $destinationPath = public_path('assets/img/avatar');
+                $request->file('profile_picture')->move($destinationPath, $fileName);
+                $profile_pic_path = 'assets/img/avatar/' . $fileName;
+                $user->profile_picture = $profile_pic_path;
+                $user->save();
+            }
+        } else {
+            return Redirect::route('profile.edit', $id)->with(['verify' => 'profile-updated', 'status' => 'danger', 'message' => 'Select a photo']);
+        }
+
+        return Redirect::route('profile.edit', $id)->with(['verify' => 'profile-updated', 'status' => 'success', 'message' => 'Profile updated successfully']);
     }
 
     /**

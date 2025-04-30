@@ -9,7 +9,7 @@
         <meta name="description" content="" />
 
         <!-- Favicon -->
-        <link rel="icon" type="image/x-icon" href="{{ asset('assets/img/favicon/favicon.ico') }}" />
+        {{-- <link rel="icon" type="image/x-icon" href="{{ asset('assets/img/favicon/favicon.ico') }}" /> --}}
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -69,6 +69,8 @@
         </div>
         <!-- / Layout wrapper -->
 
+
+
         <!-- Core JS -->
         <script src="{{ asset('assets/vendor/libs/jquery/jquery.js') }}"></script>
         <script src="{{ asset('assets/vendor/libs/popper/popper.js') }}"></script>
@@ -81,7 +83,6 @@
 
         <!-- Main JS -->
         <script src="{{ asset('assets/js/main.js') }}"></script>
-
         @stack('scripts')
     </body>
 </html>
